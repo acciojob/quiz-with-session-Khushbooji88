@@ -53,4 +53,6 @@ function renderQuestions() {
     questionsElement.appendChild(questionElement);
   }
 }
+    choiceElement.addEventListener("change", function() {
+	document.getElementById("submit").addEventListener("click", function() {
 renderQuestions();
