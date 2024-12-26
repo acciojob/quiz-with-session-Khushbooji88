@@ -26,6 +26,7 @@ const questions = [
     }
 ];
 
+// Retrieve user answers from sessionStorage or initialize to null
 let userAnswers = JSON.parse(sessionStorage.getItem('progress')) || new Array(questions.length).fill(null);
 
 const quizContainer = document.getElementById('quiz-container');
@@ -34,7 +35,7 @@ const scoreElement = document.getElementById('score');
 
 // Function to display the quiz
 function displayQuiz() {
-    quizContainer.innerHTML = '';
+    quizContainer.innerHTML = ''; // Clear previous quiz if any
     
     questions.forEach((question, index) => {
         const questionDiv = document.createElement('div');
@@ -53,10 +54,12 @@ function displayQuiz() {
             input.value = optionIndex;
             input.id = `question-${index}-option-${optionIndex}`;
             
+            // Preselect answers if they exist in sessionStorage
             if (userAnswers[index] === optionIndex) {
                 input.checked = true;
             }
             
+            // Save the answer to sessionStorage when changed
             input.addEventListener('change', () => {
                 userAnswers[index] = optionIndex;
                 sessionStorage.setItem('progress', JSON.stringify(userAnswers));
@@ -80,21 +83,21 @@ function calculateScore() {
         return score;
     }, 0);
 
+    // Save score to localStorage
     localStorage.setItem('score', score);
     scoreElement.textContent = `Your score is ${score} out of 5.`;
 }
 
-// Check if the user has already submitted the quiz (score saved in local storage)
+// Check if the user has already submitted the quiz (score saved in localStorage)
 if (localStorage.getItem('score')) {
     scoreElement.textContent = `Your last score was ${localStorage.getItem('score')} out of 5.`;
-    submitBtn.disabled = true;  // Disable submit if quiz is already completed
+    submitBtn.disabled = true;  // Disable submit button if quiz is already completed
 } else {
-    displayQuiz(); // Load quiz if not submitted yet
+    displayQuiz(); // Display the quiz if not yet submitted
 }
 
 // Event listener for submit button
 submitBtn.addEventListener('click', () => {
     calculateScore();
-    submitBtn.disabled = true;  // Disable the submit button after submission
+    submitBtn.disabled = true;  // Disable submit button after submission
 });
-
