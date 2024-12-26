@@ -55,4 +55,19 @@ function renderQuestions() {
 }
     choiceElement.addEventListener("change", function() {
 	document.getElementById("submit").addEventListener("click", function() {
+		function renderQuestions() {
+  // ...
+  for (let j = 0; j < question.choices.length; j++) {
+    // ...
+    choiceElement.addEventListener("change", function() {
+      // Update userAnswers and session storage here
+    });
+    // ...
+  }
+  // ...
+}
+
+document.getElementById("submit").addEventListener("click", function() {
+  // Calculate score, update score display, and update local storage here
+});
 renderQuestions();
