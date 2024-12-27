@@ -3,40 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz with Progress</title>
+    <title>Quiz with Session</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
         }
         .question {
             margin-bottom: 20px;
         }
-        .question label {
-            display: block;
-            margin: 5px 0;
-        }
-        #score {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        #submit-btn:disabled {
-            background-color: #ccc;
+        .question h3 {
+            margin: 0;
         }
     </style>
 </head>
 <body>
+    <h1>Quiz</h1>
+    <div id="quiz-container"></div>
+    <button id="submit">Submit</button>
+    <div id="result" style="margin-top: 20px;"></div>
 
-    <h1>Quiz: Test Your Knowledge!</h1>
-    
-    <div id="quiz-container">
-        <!-- Quiz questions will be injected here by JavaScript -->
-    </div>
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                answer: 2
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Earth", "Mars", "Jupiter", "Saturn"],
+                answer: 1
+            },
+            {
+                question: "What is the largest mammal?",
+                options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+                answer: 1
+            },
+            {
+                question: "Which gas do plants absorb for photosynthesis?",
+                options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+                answer: 2
+            },
+            {
+                question: "What is the square root of 64?",
+                options: ["6", "7", "8", "9"],
+                answer: 2
+            }
+        ];
 
-    <button id="submit-btn">Submit</button>
+        const quizContainer = document.getElementById("quiz-container");
+        const submitButton = document.getElementById("submit");
+        const resultContainer = document.getElementById("result");
 
-    <div id="score"></div>
+        function loadProgress() {
+            return JSON.parse(sessionStorage.getItem("progress")) || {};
+        }
 
-    <script src="quiz.js"></script>
+        function saveProgress(progress) {
+            sessionStorage.setItem("progress", JSON.stringify(progress));
+        }
+
+        function renderQuiz() {
+            const progress = loadProgress();
+            quizContainer.innerHTML = "";
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.className = "question";
+
+                const questionTitle = document.createElement("h3");
+                questionTitle.textContent = `${index + 1}. ${q.question}`;
+                questionDiv.appendChild(questionTitle);
+
+                q.options.forEach((option, optionIndex) => {
+                    const label = document.createElement("label");
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = `question-${index}`;
+                    input.value = optionIndex;
+                    if (progress[index] == optionIndex) {
+                        input.checked = true;
+                    }
+
+                    input.addEventListener("change", () => {
+                        progress[index] = optionIndex;
+                        saveProgress(progress);
+                    });
+
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    questionDiv.appendChild(label);
+                    questionDiv.appendChild(document.createElement("br"));
+                });
+
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function calculateScore() {
+            const progress = loadProgress();
+            let score = 0;
+
+            questions.forEach((q, index) => {
+                if (progress[index] == q.answer) {
+                    score++;
+                }
+            });
+
+            return score;
+        }
+
+        submitButton.addEventListener("click", () => {
+            const score = calculateScore();
+            localStorage.setItem("score", score);
+            resultContainer.textContent = `Your score is ${score} out of ${questions.length}.`;
+        });
+
+        // Initial rendering of the quiz
+        renderQuiz();
+    </script>
 </body>
 </html>
+
