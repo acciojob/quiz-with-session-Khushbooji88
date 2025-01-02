@@ -3,18 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz with Session and Local Storage</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Quiz with Session</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    #submitBtn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    #submitBtn:hover {
+      background-color: #0056b3;
+    }
+    #scoreDisplay {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <div class="quiz-container">
-    <h1>Quiz</h1>
-    <form id="quizForm">
-      <!-- Questions will be dynamically generated here -->
-    </form>
-    <button id="submitBtn">Submit</button>
-    <div id="score"></div>
-  </div>
+  <h1>Quiz</h1>
+  <div id="quizContainer"></div>
+  <button id="submitBtn">Submit</button>
+  <div id="scoreDisplay"></div>
 
   <script src="quiz.js"></script>
 </body>
