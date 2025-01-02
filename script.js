@@ -1,4 +1,3 @@
-// Questions data
 const questions = [
   { 
     question: "What is 2 + 2?", 
@@ -29,25 +28,26 @@ const questions = [
 
 // Function to load the quiz questions
 function loadQuiz() {
-  const quizForm = document.getElementById('quizForm');
+  const quizContainer = document.getElementById('quizContainer');
+  quizContainer.innerHTML = '';
+
   questions.forEach((question, index) => {
-    const questionContainer = document.createElement('div');
-    questionContainer.classList.add('question-container');
-    
-    const questionTitle = document.createElement('p');
-    questionTitle.textContent = question.question;
-    
-    questionContainer.appendChild(questionTitle);
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question';
+
+    const questionText = document.createElement('p');
+    questionText.textContent = `${index + 1}. ${question.question}`;
+    questionDiv.appendChild(questionText);
 
     question.options.forEach((option, optionIndex) => {
       const label = document.createElement('label');
       label.textContent = option;
+
       const input = document.createElement('input');
       input.type = 'radio';
       input.name = `question${index}`;
       input.value = optionIndex;
-      
-      // Check if the user selected this option previously
+
       const savedProgress = sessionStorage.getItem('progress');
       if (savedProgress) {
         const progress = JSON.parse(savedProgress);
@@ -57,10 +57,10 @@ function loadQuiz() {
       }
 
       label.prepend(input);
-      questionContainer.appendChild(label);
+      questionDiv.appendChild(label);
     });
 
-    quizForm.appendChild(questionContainer);
+    quizContainer.appendChild(questionDiv);
   });
 }
 
@@ -77,8 +77,7 @@ function saveProgress() {
 
 // Function to calculate and display the score
 function calculateScore() {
-  const progress = JSON.parse(sessionStorage.getItem('progress'));
-  if (!progress) return;
+  const progress = JSON.parse(sessionStorage.getItem('progress')) || [];
 
   let score = 0;
   progress.forEach((selectedOption, index) => {
@@ -91,15 +90,15 @@ function calculateScore() {
   localStorage.setItem('score', score);
 
   // Display the score
-  document.getElementById('score').textContent = `Your score is ${score} out of 5.`;
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  scoreDisplay.textContent = `Your score is ${score} out of 5.`;
 }
 
-// Add event listeners
-document.getElementById('submitBtn').addEventListener('click', () => {
-  saveProgress();
-  calculateScore();
-});
+// Event listener for saving progress on option change
+document.addEventListener('change', saveProgress);
+
+// Event listener for the submit button
+document.getElementById('submitBtn').addEventListener('click', calculateScore);
 
 // Load the quiz on page load
 window.onload = loadQuiz;
-
